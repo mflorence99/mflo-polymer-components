@@ -1,0 +1,6 @@
+{
+  "name": "mflo-polymer-components",
+  "devDependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  }
+}

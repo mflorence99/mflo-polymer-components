@@ -1,0 +1,30 @@
+{
+  "appenders": [
+
+    {
+      "type": "dateFile",
+      "filename": "gulpfile.log",
+      "pattern": "-yyyy-MM-dd",
+      "alwaysIncludePattern": false,
+      "layout": {
+        "type": "pattern",
+        "tokens": {
+          "component": "{{component}}"
+        },
+        "pattern": "[%r] [%p] [%x{component}] - %m"
+      }
+    },
+
+    {
+      "type": "console",
+      "layout": {
+        "type": "pattern",
+        "tokens": {
+          "component": "{{component}}"
+        },
+        "pattern": "[%r] [%[%5.5p%]] [%x{component}] - %m"
+      }
+    }
+
+  ]
+}
