@@ -84,6 +84,8 @@ function buildJSDoc() {
   log.info(".... building JSDoc files");
   shell.task([
     "./node_modules/jsdoc/jsdoc.js " + path.join("..", "components", component) +
+      " --package " + path.join("..", "components", component, "package.json") +
+      " --readme " + path.join("..", "components", component, "readme.md") +
       " -r -c jsdoc.conf.json -d " + path.join(target, "docs")
   ]).call()
 }
