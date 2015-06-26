@@ -1,12 +1,8 @@
 /**
- * <hello-world> styles
- *
- * <p>Just to test build process</p>
+ * <test-case> unit tests
  *
  * @author      https://github.com/mflorence99/mflorence99.github.io
  * @version     0.0.1
  */
 
-p {
-  color: blue;
-}
+console.log("xxx");

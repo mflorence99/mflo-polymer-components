@@ -1,25 +1,18 @@
 /**
+ * mflo-polymer-components: Experiments with Polymer Components and Tooling
  *
- * @package     mflo-polymer-components
- * @version     0.0.0
- * @copyright   Copyright (c) 2015 - All rights reserved.
- * @license     MIT License
- * @author      Mark Florence <mflo999@gmail.com>
- * @link        https://github.com/mflorence99/mflorence99.github.io
- *
+ * @author      https://github.com/mflorence99/mflorence99.github.io
+ * @version     0.0.1
  */
 
 // declare dependencies
 var autoprefixer = require("gulp-autoprefixer");
 var concat = require("gulp-concat");
-var cssBase64 = require("gulp-css-base64");
 var debug = require("gulp-debug");
 var eslint = require("gulp-eslint");
 var fs = require("fs-extra");
 var gulp = require("gulp");
-var gulpif = require("gulp-if");
 var header = require("gulp-header");
-var ignore = require("gulp-ignore");
 var iife = require("gulp-iife");
 var less = require("gulp-less");
 var log4js = require("log4js");
@@ -27,7 +20,7 @@ var path = require("path");
 var prettify = require("gulp-prettify");
 var rename = require("gulp-rename");
 var replace = require("gulp-replace");
-var tap = require("gulp-tap");
+var stripComments = require("gulp-strip-comments");
 var ts = require("gulp-typescript");
 var typescript = require("typescript");
 var yargs = require("yargs");
@@ -45,14 +38,14 @@ var log = configLog(component);
 // build the component HTML
 function buildComponent() {
   log.info(".... building component HTML file");
-  var style = fs.readFileSync(path.join(target, "all.css"));
-  var script = fs.readFileSync(path.join(target, "all.js"));
+  var style = fs.readFileSync(path.join(target, "component.css"));
+  var script = fs.readFileSync(path.join(target, "component.js"));
   var to = path.join(target, "bower_components", component);
   var globs = [ ];
   globs.push(path.join("..", "components", component, component + ".html"));
   gulp.src(globs)
-    .pipe(replace(/<style\/>/g, "<style>\n" + style + "\n</style>"))
-    .pipe(replace(/<script\/>/g, "<script>\n" + script + "\n</script>"))
+    .pipe(replace(/<style\/>/g, "<style>" + style + "</style>"))
+    .pipe(replace(/<script\/>/g, "<script>" + script + "</script>"))
     .pipe(prettify({
         brace_style: "none",
         indent_size: 2,
@@ -60,7 +53,7 @@ function buildComponent() {
       }))
     .pipe(gulp.dest(to))
     .on("end", function() {
-      fs.removeSync(path.join(target, "all.*"));
+      fs.removeSync(path.join(target, "component.*"));
     });
 }
 
@@ -69,7 +62,7 @@ function buildJS(done) {
   log.info(".... building JavaScript files");
   var globs = [ ];
   globs.push("!" + path.join("..", "components", "**/*.spec.js"));
-  globs.push(path.join(target, "all.ts.js"));
+  globs.push(path.join(target, "component.ts.js"));
   globs.push(path.join("..", "components", component, "**/*.js"));
   gulp.src(globs)
     .pipe(header("\n\n/* eslint-enable */\n\n"))
@@ -78,8 +71,9 @@ function buildJS(done) {
         ignorePath: path.join("..", ".eslintignore")
       }))
     .pipe(eslint.format())
-    .pipe(concat("all.js"))
+    .pipe(concat("component.js"))
     .pipe(iife())
+    .pipe(stripComments())
     .pipe(gulp.dest(target))
     .on("end", done);
 }
@@ -91,7 +85,7 @@ function buildLESS(done) {
   globs.push(path.join("..", "components", component, "**/*.css"));
   globs.push(path.join("..", "components", component, "**/*.less"));
   gulp.src(globs)
-    .pipe(concat("all.less"))
+    .pipe(concat("component.less"))
     .pipe(less({
         paths: [
           path.join("..", "components")
@@ -101,6 +95,7 @@ function buildLESS(done) {
     .pipe(autoprefixer({
         cascade: false
       }))
+    .pipe(stripComments())
     .pipe(gulp.dest(target))
     .on("end", done);
 }
@@ -112,9 +107,10 @@ function buildTS(done) {
   globs.push(path.join("..", "components", "definitely_typed", "**/*.ts"));
   globs.push(path.join("..", "components", component, "**/*.ts"));
   gulp.src(globs)
+    .pipe(stripComments())
     .pipe(header("\n\n/* eslint-disable */\n\n"))
     .pipe(ts({
-        out: "all.ts.js",
+        out: "component.ts.js",
         target: "ES5",
         typescript: typescript
       }))
@@ -151,7 +147,7 @@ function configLog(component) {
 }
 
 // copy dirs common to all components
-function copyTestDirs() {
+function copyDirs() {
   var dirs = ["bower_components"];
   dirs.forEach(function(dir) {
     var from = path.join("..", "components", dir, "**");
@@ -162,27 +158,61 @@ function copyTestDirs() {
   });
 }
 
-// copy the testing HTML
-function copyTestHTML() {
-  log.info(".... copying the testing HTML files");
+// copy the HTML
+function copyHTML() {
+  log.info(".... copying the HTML files");
   var globs = [ ];
   globs.push(path.join("..", "components", component, "demo.html"));
-  globs.push(path.join("..", "components", component, "test.html"));
   gulp.src(globs)
     .pipe(gulp.dest(target));
+}
+
+// generate the test HTML
+function testHTML() {
+  log.info(".... building test HTML file");
+  var script = fs.readFileSync(path.join(target, "spec.js"));
+  gulp.src("test.template")
+    .pipe(replace(/{{component}}/g, component))
+    .pipe(replace(/<script\/>/g, "<script>" + script + "</script>"))
+    .pipe(prettify({
+        brace_style: "none",
+        indent_size: 2,
+        wrap_line_length: 90
+      }))
+    .pipe(rename("test.html"))
+    .pipe(gulp.dest(target))
+    .on("end", function() {
+      fs.removeSync(path.join(target, "spec.*"));
+    });
+}
+
+// generate the test JavaScript
+function testJS(done) {
+  log.info(".... building test JavaScript files");
+  var globs = [ ];
+  globs.push(path.join("..", "components", component, "**/*.spec.js"));
+  gulp.src(globs)
+    .pipe(concat("spec.js"))
+    .pipe(iife())
+    .pipe(stripComments())
+    .pipe(gulp.dest(target))
+    .on("end", done);
 }
 
 // gulp tasks
 
 gulp.task("test", function() {
   cleanTarget();
-  copyTestDirs();
-  copyTestHTML();
+  copyDirs();
+  copyHTML();
   buildLESS(function() {
     buildTS(function() {
       buildJS(function() {
         buildComponent();
       })
     })
+  });
+  testJS(function() {
+    testHTML();
   });
 });

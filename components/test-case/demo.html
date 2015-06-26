@@ -1,0 +1,30 @@
+<!doctype html>
+
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>&lt;test-case&gt;</title>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="bower_components/test-case/test-case.html">
+  </head>
+
+  <body>
+
+    <p>An example of <code>&lt;test-case&gt;</code>:</p>
+
+    <button>Say Something</button>
+
+    <test-case>
+      <h2>Hello test-case</h2>
+    </test-case>
+
+    <script>
+      document.querySelector('button').addEventListener('click', function() {
+        alert(document.querySelector('test-case').sayHello('Hallo!'));
+      });
+    </script>
+
+  </body>
+
+</html>
