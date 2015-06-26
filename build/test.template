@@ -12,11 +12,11 @@
 
   <body>
 
-    <h1>{{component}} Tests</h1>
-
-    <{{component}}></{{component}}>
-
-    <script/>
+    <script>
+      WCT.loadSuites([
+        "spec.js"
+      ]);
+    </script>
 
   </body>
 

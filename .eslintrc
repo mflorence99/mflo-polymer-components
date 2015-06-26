@@ -2,6 +2,7 @@
   "globals": {
     "_": true,
     "console": true,
+    "document": true,
     "escape": true,
     "Polymer": true,
     "window": true,

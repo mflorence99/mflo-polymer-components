@@ -1,0 +1,7 @@
+{
+  "plugins": [],
+  "source": {
+    "excludePattern": ".+\\.spec.js$",
+    "includePattern": ".+\\.js$"
+  }
+}

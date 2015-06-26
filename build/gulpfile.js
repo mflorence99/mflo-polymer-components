@@ -20,6 +20,7 @@ var path = require("path");
 var prettify = require("gulp-prettify");
 var rename = require("gulp-rename");
 var replace = require("gulp-replace");
+var shell = require("gulp-shell");
 var stripComments = require("gulp-strip-comments");
 var ts = require("gulp-typescript");
 var typescript = require("typescript");
@@ -76,6 +77,15 @@ function buildJS(done) {
     .pipe(stripComments())
     .pipe(gulp.dest(target))
     .on("end", done);
+}
+
+// build JSDoc
+function buildJSDoc() {
+  log.info(".... building JSDoc files");
+  shell.task([
+    "./node_modules/jsdoc/jsdoc.js " + path.join("..", "components", component) +
+      " -r -c jsdoc.conf.json -d " + path.join(target, "docs")
+  ]).call()
 }
 
 // build all the LESS/CSS into a stream
@@ -170,20 +180,15 @@ function copyHTML() {
 // generate the test HTML
 function testHTML() {
   log.info(".... building test HTML file");
-  var script = fs.readFileSync(path.join(target, "spec.js"));
   gulp.src("test.template")
     .pipe(replace(/{{component}}/g, component))
-    .pipe(replace(/<script\/>/g, "<script>" + script + "</script>"))
     .pipe(prettify({
         brace_style: "none",
         indent_size: 2,
         wrap_line_length: 90
       }))
     .pipe(rename("test.html"))
-    .pipe(gulp.dest(target))
-    .on("end", function() {
-      fs.removeSync(path.join(target, "spec.*"));
-    });
+    .pipe(gulp.dest(target));
 }
 
 // generate the test JavaScript
@@ -215,4 +220,6 @@ gulp.task("test", function() {
   testJS(function() {
     testHTML();
   });
+  // TEMP
+  buildJSDoc();
 });
