@@ -8,7 +8,7 @@
 // declare dependencies
 var autoprefixer = require("gulp-autoprefixer");
 var concat = require("gulp-concat");
-var debug = require("gulp-debug");
+// var debug = require("gulp-debug");
 var eslint = require("gulp-eslint");
 var fs = require("fs-extra");
 var gulp = require("gulp");
@@ -33,32 +33,40 @@ var argv = yargs.argv;
 var component = argv["component"];
 var target = argv["target"];
 
+// make sure target exists
+fs.mkdirsSync(target);
+
 // this is the logger
 var log = configLog(component);
 
 // build the component HTML
-function buildComponent() {
-  log.info(".... building component HTML file");
-  var style = fs.readFileSync(path.join(target, "component.css"));
-  var script = fs.readFileSync(path.join(target, "component.js"));
-  var to = path.join(target, "bower_components", component);
-  var globs = [ ];
-  globs.push(path.join("..", "components", component, component + ".html"));
-  gulp.src(globs)
-    .pipe(replace(/<style\/>/g, "<style>" + style + "</style>"))
-    .pipe(replace(/<script\/>/g, "<script>" + script + "</script>"))
-    .pipe(prettify({
-        brace_style: "none",
-        indent_size: 2,
-        wrap_line_length: 90
-      }))
-    .pipe(gulp.dest(to))
-    .on("end", function() {
-      fs.removeSync(path.join(target, "component.*"));
+function buildComponent(to) {
+  buildLESS(function() {
+    buildTS(function() {
+      buildJS(function() {
+        log.info(".... building component HTML file");
+        var style = fs.readFileSync(path.join(target, "component.css"));
+        var script = fs.readFileSync(path.join(target, "component.js"));
+        var globs = [ ];
+        globs.push(path.join("..", "components", component, component + ".html"));
+        gulp.src(globs)
+          .pipe(replace(/<style\/>/g, "<style>" + style + "</style>"))
+          .pipe(replace(/<script\/>/g, "<script>" + script + "</script>"))
+          .pipe(prettify({
+              brace_style: "none",
+              indent_size: 2,
+              wrap_line_length: 90
+            }))
+          .pipe(gulp.dest(to))
+          .on("end", function() {
+            fs.removeSync(path.join(target, "component.*"));
+          });
+      });
     });
+  });
 }
 
-// build all the JavaScript into a stream
+// build all the JavaScript
 function buildJS(done) {
   log.info(".... building JavaScript files");
   var globs = [ ];
@@ -67,10 +75,7 @@ function buildJS(done) {
   globs.push(path.join("..", "components", component, "**/*.js"));
   gulp.src(globs)
     .pipe(header("\n\n/* eslint-enable */\n\n"))
-    .pipe(eslint({
-        configFile: path.join("..", ".eslintrc"),
-        ignorePath: path.join("..", ".eslintignore")
-      }))
+    .pipe(eslint())
     .pipe(eslint.format())
     .pipe(concat("component.js"))
     .pipe(iife())
@@ -87,7 +92,7 @@ function buildJSDoc() {
       " --package " + path.join("..", "components", component, "package.json") +
       " --readme " + path.join("..", "components", component, "readme.md") +
       " -r -c jsdoc.conf.json -d " + path.join(target, "docs")
-  ]).call()
+  ]).call();
 }
 
 // build all the LESS/CSS into a stream
@@ -112,7 +117,39 @@ function buildLESS(done) {
     .on("end", done);
 }
 
-// build all the TypeScript into a stream
+// generate the test JavaScript
+function buildSpecs(done) {
+  log.info(".... building test JavaScript files");
+  var globs = [ ];
+  globs.push(path.join("..", "components", component, "**/*.spec.js"));
+  gulp.src(globs)
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(concat("spec.js"))
+    .pipe(iife())
+    .pipe(stripComments())
+    .pipe(gulp.dest(target))
+    .on("end", done);
+}
+
+// build the test HTML
+function buildTests() {
+  buildSpecs(function() {
+    log.info(".... building test HTML file");
+    gulp.src("test.template")
+      .pipe(replace(/\{\{component\}\}/g, component))
+      .pipe(prettify({
+          brace_style: "none",
+          indent_size: 2,
+          wrap_line_length: 90
+        }))
+      .pipe(rename("test.html"))
+      .pipe(gulp.dest(target));
+  });
+}
+
+// build all the TypeScript
+// NOTE: different order of operations as ts feeds into js
 function buildTS(done) {
   log.info(".... building TypeScript files");
   var globs = [ ];
@@ -151,7 +188,7 @@ function cleanTarget() {
 // configure logging
 function configLog(component) {
   var raw = fs.readFileSync(path.join(__dirname, "log4js.json")).toString();
-  var config = JSON.parse(raw.replace(/{{component}}/g, component));
+  var config = JSON.parse(raw.replace(/\{\{component\}\}/g, component));
   var dn = path.join(".", "logs");
   fs.mkdirsSync(dn);
   log4js.configure(config, { cwd: dn } );
@@ -159,8 +196,7 @@ function configLog(component) {
 }
 
 // copy dirs common to all components
-function copyDirs() {
-  var dirs = ["bower_components"];
+function copyDirs(dirs) {
   dirs.forEach(function(dir) {
     var from = path.join("..", "components", dir, "**");
     var to = path.join(target, dir);
@@ -170,58 +206,30 @@ function copyDirs() {
   });
 }
 
-// copy the HTML
-function copyHTML() {
-  log.info(".... copying the HTML files");
+// copy required files
+function copyFiles(files) {
+  log.info(".... copying required files");
   var globs = [ ];
-  globs.push(path.join("..", "components", component, "demo.html"));
+  files.forEach(function(file) {
+    globs.push(path.join("..", "components", component, file));
+  });
   gulp.src(globs)
     .pipe(gulp.dest(target));
-}
-
-// generate the test HTML
-function testHTML() {
-  log.info(".... building test HTML file");
-  gulp.src("test.template")
-    .pipe(replace(/{{component}}/g, component))
-    .pipe(prettify({
-        brace_style: "none",
-        indent_size: 2,
-        wrap_line_length: 90
-      }))
-    .pipe(rename("test.html"))
-    .pipe(gulp.dest(target));
-}
-
-// generate the test JavaScript
-function testJS(done) {
-  log.info(".... building test JavaScript files");
-  var globs = [ ];
-  globs.push(path.join("..", "components", component, "**/*.spec.js"));
-  gulp.src(globs)
-    .pipe(concat("spec.js"))
-    .pipe(iife())
-    .pipe(stripComments())
-    .pipe(gulp.dest(target))
-    .on("end", done);
 }
 
 // gulp tasks
 
+gulp.task("publish", function() {
+  cleanTarget();
+  copyFiles(["*.json", "*.md"]);
+  buildComponent(target);
+  buildJSDoc();
+});
+
 gulp.task("test", function() {
   cleanTarget();
-  copyDirs();
-  copyHTML();
-  buildLESS(function() {
-    buildTS(function() {
-      buildJS(function() {
-        buildComponent();
-      })
-    })
-  });
-  testJS(function() {
-    testHTML();
-  });
-  // TEMP
-  buildJSDoc();
+  copyDirs(["bower_components"]);
+  copyFiles(["demo.html"]);
+  buildComponent(path.join(target, "bower_components", component));
+  buildTests();
 });
