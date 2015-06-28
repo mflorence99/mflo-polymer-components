@@ -1,0 +1,1 @@
+docker build -t mflo999/polymer-components-runner .

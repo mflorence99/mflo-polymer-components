@@ -1,7 +1,7 @@
 /**
  * mflo-polymer-components: Experiments with Polymer Components and Tooling
  *
- * @author      https://github.com/mflorence99/mflorence99.github.io
+ * @author      http://mflo.io
  * @version     0.0.1
  */
 
