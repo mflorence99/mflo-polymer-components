@@ -1,6 +1,5 @@
 # ```mflo-polymer-components``` Experiments with Polymer Components and Tooling
 
-
 Full details can be found on [mflo.io](http://mflo.io/mflo-polymer-components/).
 
 
@@ -9,11 +8,9 @@ Full details can be found on [mflo.io](http://mflo.io/mflo-polymer-components/).
 Mark Florence (mflo999@gmail.com).
 
 
-## License
+## MIT License
 
-(The MIT License)
-
-Copyright (c) 2015 Mark Florence <mflo999@gmail.com>
+&copy; 2015 Mark Florence <mflo999@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
