@@ -1,0 +1,44 @@
+/**
+ * <spinning-numbers> styles
+ *
+ * @author      http://mflo.io
+ * @version     0.0.1
+ */
+
+@font-face {
+  font-family: "Segment7";
+  src: url("fonts/segment7.eot");
+  src: url("fonts/segment7.eot?#iefix") format("embedded-opentype"),
+       url("fonts/segment7.woff") format("woff"),
+       url("fonts/segment7.ttf") format("truetype"),
+       url("fonts/segment7.svg#s") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+#container {
+  display: block;
+
+  >div {
+    display: inline-block;
+    height: 1em;
+    font-family: "Segment7";
+    line-height: 1em;
+    overflow: hidden;
+    width: 1em;
+
+    >div {
+      display: inline-block;
+      position: relative;
+      visibility: visible;
+    }
+
+  }
+
+}
+
+@keyframes spinning-number {
+ 0% { top: 0em; visibility: visible }
+ 50% { top: -5em; }
+ 100% { top: -9em; }
+}

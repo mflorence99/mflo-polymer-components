@@ -1,6 +1,7 @@
 {
   "name": "mflo-polymer-components",
   "dependencies": {
+    "lodash": "^3.5.0",
     "polymer": "Polymer/polymer#^1.0.0"
   },
   "devDependencies": {

@@ -41,29 +41,41 @@ var log = configLog(component);
 
 // build the component HTML
 function buildComponent(to) {
-  buildLESS(function() {
-    buildTS(function() {
-      buildJS(function() {
-        log.info(".... building component HTML file");
-        var style = fs.readFileSync(path.join(target, "component.css"));
-        var script = fs.readFileSync(path.join(target, "component.js"));
-        var globs = [ ];
-        globs.push(path.join("..", "components", component, component + ".html"));
-        gulp.src(globs)
-          .pipe(replace(/<style\/>/g, "<style>" + style + "</style>"))
-          .pipe(replace(/<script\/>/g, "<script>" + script + "</script>"))
-          .pipe(prettify({
+  buildFonts(to, function() {
+    buildLESS(function () {
+      buildTS(function () {
+        buildJS(function () {
+          log.info(".... building component HTML file");
+          var style = fs.readFileSync(path.join(target, "component.css"));
+          var script = fs.readFileSync(path.join(target, "component.js"));
+          var globs = [];
+          globs.push(path.join("..", "components", component, component + ".html"));
+          gulp.src(globs)
+            .pipe(replace(/<style\/>/g, "<style>" + style + "</style>"))
+            .pipe(replace(/<script\/>/g, "<script>" + script + "</script>"))
+            .pipe(prettify({
               brace_style: "none",
               indent_size: 2,
               wrap_line_length: 90
             }))
-          .pipe(gulp.dest(to))
-          .on("end", function() {
-            fs.removeSync(path.join(target, "component.*"));
-          });
+            .pipe(gulp.dest(to))
+            .on("end", function () {
+              fs.removeSync(path.join(target, "component.*"));
+            });
+        });
       });
     });
   });
+}
+
+// build any embedded fonts
+function buildFonts(to, done) {
+  log.info(".... building fonts subdirectory");
+  var globs = [];
+  globs.push(path.join("..", "components", component, "fonts", "*.*"));
+  gulp.src(globs)
+    .pipe(gulp.dest(path.join(to, "fonts")))
+    .on("end", done);
 }
 
 // build all the JavaScript
