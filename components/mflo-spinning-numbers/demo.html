@@ -3,41 +3,80 @@
 <html>
 
   <head>
+
     <meta charset="utf-8">
     <title>&lt;mflo-spinning-numbers&gt;</title>
+
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="bower_components/mflo-spinning-numbers/mflo-spinning-numbers.html">
-  </head>
 
-    <p>An example of <code>&lt;mflo-spinning-numbers&gt;</code>:</p>
+    <style>
 
-    <button>Random Number</button>&nbsp;<span id="readout"></span>
+      body {
+        font-family: sans-serif;
+      }
 
-    <br>
-    <br>
+      button {
+        background-color: rgb(255,64,129);
+        border: 0;
+        border-radius: 20px;
+        color: white;
+        cursor: pointer;
+        height: 40px;
+        min-width: 200px;
+        padding: 0 1rem;
+        vertical-align: top;
+      }
+
+      button:focus {
+        outline: none;
+      }
+
+    </style>
+
+    <style is="custom-style">
+
+      mflo-spinning-numbers {
+        --mflo-spinning-numbers-background-color: black;
+        --mflo-spinning-numbers-color: lightgreen;
+        --mflo-spinning-numbers-display: inline-block;
+        --mflo-spinning-numbers-font-size: 32px;
+        --mflo-spinning-numbers-min-width: 280px;
+      }
+
+    </style>
 
     <script>
-      document.querySelector("button").addEventListener("click", function() {
+
+      function testIt() {
         var spinner = document.querySelector("mflo-spinning-numbers");
         var dim = Math.trunc(Math.random() * 10);
         spinner.value = Math.trunc(Math.random() * Math.pow(10, dim));
-        var readout = document.querySelector("span#readout");
-        readout.innerText = spinner.value;
-      });
+        var button = document.querySelector("button");
+        button.innerHTML = spinner.value;
+      }
+
     </script>
 
-    <style>
-      mflo-spinning-numbers /deep/ #container {
-        background-color: black;
-        color: lightgreen;
-        display: inline-block;
-        font-size: 32px;
-        min-width: 280px;
-      }
-    </style>
+  </head>
 
-    <mflo-spinning-numbers>
-    </mflo-spinning-numbers>
+  <body>
+
+    <h1>
+      <img src="https://www.polymer-project.org/images/logos/lockup.svg" valign="middle">
+      <code>&lt;mflo-spinning-numbers&gt;</code>
+    </h1>
+
+    <p>
+      <button onclick="testIt()">Generate Random Number</button>
+      &nbsp;
+      <mflo-spinning-numbers></mflo-spinning-numbers>
+    </p>
+
+    <p>
+      <i>See <a href="https://github.com/mflorence99/mflo-spinning-numbers">
+        https://github.com/mflorence99/mflo-spinning-numbers</a></i>.
+    </p>
 
   </body>
 
