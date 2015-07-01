@@ -1,0 +1,70 @@
+/**
+ * <mflo-spinning-numbers> styles
+ *
+ * @author      http://mflo.io
+ * @version     0.0.1
+ */
+
+@font-face {
+  font-family: "Segment7";
+  src: url("fonts/segment7.eot");
+  src: url("fonts/segment7.eot?#iefix") format("embedded-opentype"),
+       url("fonts/segment7.woff") format("woff"),
+       url("fonts/segment7.ttf") format("truetype"),
+       url("fonts/segment7.svg#s") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+#container {
+  padding: 2px;
+  text-align: right;
+
+  >div {
+    display: inline-block;
+    height: 1em;
+    font-family: "Segment7";
+    line-height: 1em;
+    overflow: hidden;
+    vertical-align: middle;
+    width: 1em;
+
+    >div {
+      display: inline-block;
+      position: relative;
+      visibility: hidden;
+
+      &.spin {
+        animation-duration: 0.2s;
+        animation-fill-mode: none, forwards;
+        animation-iteration-count: 3, 1;
+        animation-name: mflo-spinning-numbers-spin, mflo-spinning-numbers-vis;
+      }
+
+      &.spin0 { animation-delay:    0ms; }
+      &.spin1 { animation-delay:  100ms; }
+      &.spin2 { animation-delay:  200ms; }
+      &.spin3 { animation-delay:  300ms; }
+      &.spin4 { animation-delay:  400ms; }
+      &.spin5 { animation-delay:  500ms; }
+      &.spin6 { animation-delay:  600ms; }
+      &.spin7 { animation-delay:  700ms; }
+      &.spin8 { animation-delay:  800ms; }
+      &.spin9 { animation-delay: 1000ms; }
+
+    }
+
+  }
+
+}
+
+@keyframes mflo-spinning-numbers-spin {
+ 0% { top: 0em }
+ 50% { top: -5em }
+ 100% { top: -9em }
+}
+
+@keyframes mflo-spinning-numbers-vis {
+ 0% { visibility: visible }
+ 100% { visibility: visible }
+}

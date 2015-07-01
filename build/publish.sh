@@ -1,1 +1,1 @@
-gulp --target="/target/final" --component="$1" publish
+gulp --target="/target/published" --component="$1" publish
