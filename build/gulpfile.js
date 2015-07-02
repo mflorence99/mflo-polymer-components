@@ -1,5 +1,5 @@
 /**
- * mflo-polymer-components: Experiments with Polymer Components and Tooling
+ * mflo-polymer-components: Experiments with Polymer Elements and Tooling
  *
  * @author      http://mflo.io
  * @version     0.0.1
@@ -124,6 +124,9 @@ function buildLESS(done) {
     .pipe(autoprefixer({
         cascade: false
       }))
+    // experimental to allow @apply() thru LESS parse
+    .pipe(replace(/\/\*\*\*/g, ""))
+    .pipe(replace(/\*\*\*\//g, ""))
     .pipe(stripComments())
     .pipe(gulp.dest(target))
     .on("end", done);
