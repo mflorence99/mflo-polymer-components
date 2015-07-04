@@ -36,4 +36,3 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 - Visit the [author website](http://mflo.io).
 - Follow [@mflo999](https://twitter.com/#!/mflo999) on Twitter for updates.
-
