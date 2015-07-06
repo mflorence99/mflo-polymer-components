@@ -43,7 +43,7 @@
       visibility: hidden;
 
       &.spin {
-        animation-duration: 0.2s;
+        animation-duration: 200ms, 0ms;
         animation-fill-mode: none, forwards;
         animation-iteration-count: 3, 1;
         animation-name: mflo-spinning-numbers-spin, mflo-spinning-numbers-vis;
@@ -73,6 +73,5 @@
 }
 
 @keyframes mflo-spinning-numbers-vis {
- 0% { visibility: visible }
  100% { visibility: visible }
 }

@@ -16,14 +16,14 @@ Polymer({
   properties: {
     value: {
       type: Number,
-      observer: "valueChanged"
+      observer: "_valueChanged"
     }
 
   },
 
   // private methods
 
-  valueChanged: function(value) {
+  _valueChanged: function(value) {
     // out with the old
     Polymer.dom(this.$.container).innerHTML = "";
     if (typeof value !== "undefined") {
