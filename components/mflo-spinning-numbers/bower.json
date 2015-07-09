@@ -15,6 +15,6 @@
     "url": "https://github.com/mflorence99/mflo-spinning-numbers"
   },
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0"
+    "polymer": "Polymer/polymer#^1.0.5"
   }
 }
