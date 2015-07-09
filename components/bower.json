@@ -2,7 +2,7 @@
   "name": "mflo-polymer-components",
   "dependencies": {
     "lodash": "^3.5.0",
-    "polymer": "Polymer/polymer#^1.0.0"
+    "polymer": "Polymer/polymer#^1.0.5"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#~3.2.0"

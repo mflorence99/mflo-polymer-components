@@ -39,7 +39,8 @@ Polymer((function() {
           var offset = Number(str.charAt(i));
           // spin index delays visibility of number by position
           var spinx = Math.min(9, Math.max(0, (str.length - 1) - i));
-          var style = "top: -" + offset + "em";
+          // off-by-one hack necessary only for this font??
+          var style = "top: calc(-" + offset + "em + 1px)";
           Polymer.dom(inner).setAttribute("style", style);
           Polymer.dom(inner).setAttribute("class", "spin spin" + spinx);
           Polymer.dom(inner).innerHTML = "0 1 2 3 4 5 6 7 8 9";
