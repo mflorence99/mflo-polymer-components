@@ -1,0 +1,17 @@
+{
+  "name": "mflo-world-flag",
+  "version": "0.0.1",
+  "description": "Polymer Element: Display World Flag by ISO 3166-1 Code",
+  "main": "mflo-world-flag.html",
+  "license": "MIT",
+  "keywords": ["Polymer", "component"],
+  "author": "Mark Florence <mflo999@gmail.com>",
+  "homepage": "https://github.com/mflorence99/mflo-world-flag",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mflorence99/mflo-world-flag"
+  },
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.5"
+  }
+}

@@ -33,6 +33,10 @@ var argv = yargs.argv;
 var component = argv["component"];
 var target = argv["target"];
 
+// make sure source component exists
+if (!fs.existsSync(path.join("..", "components", component)))
+  throw new Error(component + " does not exist!");
+
 // make sure target exists
 fs.mkdirsSync(target);
 
@@ -41,7 +45,7 @@ var log = configLog(component);
 
 // build the component HTML
 function buildComponent(to) {
-  buildFonts(to, function() {
+  buildResources(to, function() {
     buildLESS(function () {
       buildTS(function () {
         buildJS(function () {
@@ -66,16 +70,6 @@ function buildComponent(to) {
       });
     });
   });
-}
-
-// build any embedded fonts
-function buildFonts(to, done) {
-  log.info(".... building fonts subdirectory");
-  var globs = [];
-  globs.push(path.join("..", "components", component, "fonts", "*.*"));
-  gulp.src(globs)
-    .pipe(gulp.dest(path.join(to, "fonts")))
-    .on("end", done);
 }
 
 // build all the JavaScript
@@ -129,6 +123,16 @@ function buildLESS(done) {
     .pipe(replace(/\*\*\*\//g, ""))
     .pipe(stripComments())
     .pipe(gulp.dest(target))
+    .on("end", done);
+}
+
+// build any embedded resources
+function buildResources(to, done) {
+  log.info(".... building resources subdirectory");
+  var globs = [];
+  globs.push(path.join("..", "components", component, "resources", "*.*"));
+  gulp.src(globs)
+    .pipe(gulp.dest(path.join(to, "resources")))
     .on("end", done);
 }
 

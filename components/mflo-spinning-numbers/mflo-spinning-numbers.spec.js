@@ -2,7 +2,7 @@
  * <mflo-spinning-numbers> unit tests
  *
  * @author      http://mflo.io
- * @version     0.0.2
+ * @version     0.0.3
  */
 
 var spinner = document.createElement("mflo-spinning-numbers");
