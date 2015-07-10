@@ -1,7 +1,7 @@
 # Polymer Element: Display World Flag by ISO 3166-1 Code
 
-Link |
------ | ----
+Link |  |
+----- | ----- |
 [Demo](http://mflo-world-flag.surge.sh/demo.html) | For an interactive demo
 [Test](http://mflo-world-flag.surge.sh/test.html) | To run the unit tests
 [Docs](http://mflo.io/mflo-polymer-components/jsdoc/mflo-world-flag/0.0.1/index.html) | For the generated JSDocs
